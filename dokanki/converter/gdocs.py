@@ -33,9 +33,6 @@ class GDocsConverter(converter.Converter):
         assert self.supports(url)
         return self._download_url.format(self._drive_url_pattern.search(url).groups(0)[0])
 
-    def converts_to(self):
-        return "html"
-
     def download(self, url, target):
         assert self.supports(url)
 
@@ -52,9 +49,12 @@ class GDocsConverter(converter.Converter):
 
     def convert(self, url):
         temp_dir = tempfile.mkdtemp(prefix="dokanki")
+
         zip_file = self.download("{}/docs.zip".format(temp_dir), url)
         index_file = self._unzip_entry(zip_file, temp_dir)
         os.remove(zip_file)
+
         if index_file is None:
             raise FileNotFoundError("not a docs document")
+
         return index_file
