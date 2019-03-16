@@ -1,7 +1,7 @@
 class Extractor(object):
-    def extract(self, uri):
+    def extract(self, uri, level):
         pass
 
-    def supports(self, uri):
+    def supports(self, uri, level):
         return False
 

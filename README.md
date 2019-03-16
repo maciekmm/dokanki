@@ -17,7 +17,7 @@ Convert google docs, pdfs, html and other structured documents to Anki flashcard
     --name NAME
     --id ID
     --level 2
-    --repetition 10 20 30
+    --steps 10 20 30
     --out file.apkg
     // URL
 ```
