@@ -9,15 +9,15 @@ Convert google docs, pdfs, html and other structured documents to Anki flashcard
 - PDF
 - HTML
 - DOCX
+- And more!
 
 ## Usage
 ```cmd
 ./dokanki.py 
-    -name NAME
-    -id ID
-    -level 2
-    -repetition 10,20,30
-    -out file.apkg
-    -type [inferred]
+    --name NAME
+    --id ID
+    --level 2
+    --repetition 10 20 30
+    --out file.apkg
     // URL
 ```

@@ -1,0 +1,16 @@
+#!/usr/bin/env python3
+
+import argparse
+
+parser = argparse.ArgumentParser(description="Anki flashcard extractor from any document")
+parser.add_argument('--name', type=str, nargs=1, help='deck name')
+parser.add_argument('--id', type=int, nargs=1,
+                    help='unique deck id, useful for updating existing anki databases')
+parser.add_argument('-l', '--level', type=int, default=2, help='header level/depth to extract questions from')
+parser.add_argument('--steps', type=int, nargs='+', default=[10, 30], help='time steps for flashcards')
+parser.add_argument('-t', '--type', type=str, nargs=1,
+                    help='file format to overwrite pandoc''s default behavior')
+parser.add_argument('-o', '--out', type=str, help='anki database output file name')
+parser.add_argument('url', type=str, nargs=1, help='file or web url of a document')
+
+args = parser.parse_args()
