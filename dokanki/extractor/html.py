@@ -1,3 +1,4 @@
+import os
 import re
 from functools import reduce
 
@@ -9,22 +10,22 @@ from dokanki.flashcard import FlashCard
 
 class HTMLExtractor(extractor.Extractor):
 
-    def __init__(self, header_prefix="^(?:\\s*\\d+\\.)+\\s*(\[[^]]+])?\\s*"):
+    def __init__(self, header_prefix="^(?:\\s*\\d+\\.)+\\s*([[^]]+])?\\s*"):
         self._header_prefix = re.compile(header_prefix)
 
     def extract(self, uri, level):
-        with open(self._get_entry_file()) as fp:
+        with open(uri) as fp:
             bs = BeautifulSoup(fp, features="html.parser")
-            return self._extract_from_soup(bs, level)
+            return self._extract_from_soup(os.path.dirname(os.path.realpath(uri)), bs, level)
 
-    def _extract_from_soup(self, bs: BeautifulSoup, level):
-        top_level = bs.find_all("h{}".format(self.level))
+    def _extract_from_soup(self, directory, bs: BeautifulSoup, level):
+        top_level = bs.find_all("h{}".format(level))
         cards = []
         for header in top_level:
             title = self._clean_header(header.text)
             sort_tag = reduce(lambda acc, x: acc + x + '/', self._find_ancestors(header, level), '') + title
             images, content = self._extract_content(header, level)
-            cards.append(FlashCard(title, content, images, sort_tag))
+            cards.append(FlashCard(title, content, map(lambda url: directory + '/' + url, images), sort_tag))
         return cards
 
     def supports(self, uri: str):

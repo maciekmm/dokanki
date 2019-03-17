@@ -44,16 +44,20 @@ class Dokanki(object):
                 },
             ])
 
+    def add_source(self, url):
+        self.sources.append(url)
+
     def extract(self):
         for source in self.sources:
-            self.cards.append(self._extract(source))
+            for card in self._extract(source):
+                self.cards.append(card)
 
         return self
 
     def _extract(self, source):
         for extractor in self.extractors:
             if extractor.supports(source):
-                return extractor.extract(source)
+                return extractor.extract(source, self.level)
 
         for converter in self.converters:
             if converter.supports(source):
@@ -66,8 +70,8 @@ class Dokanki(object):
         deck = genanki.Deck(self.id, self.name)
 
         for card in self.cards:
-            if card.images is not None:
-                for img in card.images:
+            if card.media is not None:
+                for img in card.media:
                     images.append(img)
 
             sort_tag = reduce(lambda acc, x: acc + x + '/', card.hierarchy, '') + card.title

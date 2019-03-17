@@ -50,7 +50,7 @@ class GDocsConverter(converter.Converter):
     def convert(self, url):
         temp_dir = tempfile.mkdtemp(prefix="dokanki")
 
-        zip_file = self.download("{}/docs.zip".format(temp_dir), url)
+        zip_file = self.download(url, "{}/docs.zip".format(temp_dir))
         index_file = self._unzip_entry(zip_file, temp_dir)
         os.remove(zip_file)
 
