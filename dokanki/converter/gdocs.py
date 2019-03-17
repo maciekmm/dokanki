@@ -7,6 +7,7 @@ import zipfile
 import requests
 
 from dokanki.converter import converter
+import dokanki
 
 
 class GDocsConverter(converter.Converter):
@@ -21,6 +22,7 @@ class GDocsConverter(converter.Converter):
         zip_ref = zipfile.ZipFile(zip_file, 'r')
         zip_ref.extractall(target)
         zip_ref.close()
+        dokanki.logger.info("Unzipping {} to {}".format(zip_file, target))
 
         for file in os.listdir(target):
             if file.endswith("html"):
@@ -46,6 +48,7 @@ class GDocsConverter(converter.Converter):
         with open(target, 'wb') as out_file:
             shutil.copyfileobj(response.raw, out_file)
         del response
+        dokanki.logger.info("Downloading file from {}".format(url))
         return target
 
     def convert(self, url):

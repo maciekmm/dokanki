@@ -2,11 +2,23 @@ import json
 import os
 import zipfile
 from functools import reduce
+import logging
 
 import genanki as genanki
 
 from dokanki.converter.gdocs import GDocsConverter
 from dokanki.extractor.html import HTMLExtractor
+
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
+formatter = logging.Formatter('%(levelname)s:%(name)s:%(message)s')
+
+file_handler = logging.FileHandler('log data.log')
+file_handler.setFormatter(formatter)
+
+logger.addHandler(file_handler)
 
 
 class UnsupportedFormatError(object):
