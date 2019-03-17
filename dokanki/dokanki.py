@@ -15,7 +15,7 @@ class UnsupportedFormatError(object):
 
 class Dokanki(object):
     extractors = [
-        HTMLExtractor()
+        HTMLExtractor
     ]
     converters = [
         GDocsConverter()
@@ -23,10 +23,9 @@ class Dokanki(object):
     sources = []
     cards = []
 
-    def __init__(self, name, id, level=2, steps=[10, 20, 30]):
+    def __init__(self, name, id, steps=[10, 20, 30]):
         self.name = name
         self.id = id if id is not None else genanki.guid_for(id)
-        self.level = level
         self.steps = steps
         self._note_model = genanki.Model(
             self.id,
@@ -44,8 +43,8 @@ class Dokanki(object):
                 },
             ])
 
-    def add_source(self, url):
-        self.sources.append(url)
+    def add_source(self, url, level):
+        self.sources.append((url, level))
 
     def extract(self):
         for source in self.sources:
@@ -55,13 +54,14 @@ class Dokanki(object):
         return self
 
     def _extract(self, source):
+        uri, level = source
         for extractor in self.extractors:
-            if extractor.supports(source):
-                return extractor.extract(source, self.level)
+            if extractor.supports(uri):
+                return extractor(level).extract(uri)
 
         for converter in self.converters:
-            if converter.supports(source):
-                return self._extract(converter.convert(source))
+            if converter.supports(uri):
+                return self._extract(converter.convert(uri))
 
         raise UnsupportedFormatError()
 

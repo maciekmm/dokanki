@@ -1,7 +1,7 @@
 class Extractor(object):
-    def extract(self, uri, level):
+    def extract(self, uri):
         pass
 
-    def supports(self, uri, level):
+    @staticmethod
+    def supports(uri):
         return False
-

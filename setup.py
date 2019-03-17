@@ -47,5 +47,6 @@ setup(
     author='Maciej Mionskowski',
     author_email='dokanki@maciekmm.net',
     description='Convert properly structured documents to anki flashcards', install_requires=['requests',
-                                                                                              'beautifulsoup4']
+                                                                                              'beautifulsoup4',
+                                                                                              'genanki']
 )

@@ -1,9 +1,10 @@
 import os
-import shutil
-import requests
 import re
+import shutil
 import tempfile
 import zipfile
+
+import requests
 
 from dokanki.converter import converter
 

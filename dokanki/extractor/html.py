@@ -2,34 +2,36 @@ import os
 import re
 from functools import reduce
 
-from dokanki.extractor import extractor
 from bs4 import BeautifulSoup
 
+from dokanki.extractor import extractor
 from dokanki.flashcard import FlashCard
 
 
 class HTMLExtractor(extractor.Extractor):
 
-    def __init__(self, header_prefix="^(?:\\s*\\d+\\.)+\\s*([[^]]+])?\\s*"):
-        self._header_prefix = re.compile(header_prefix)
+    @staticmethod
+    def supports(uri: str):
+        return uri.endswith(".html")
 
-    def extract(self, uri, level):
+    def __init__(self, level=2, header_prefix="^(?:\\s*\\d+\\.)+\\s*(\[[^]]+])?\\s*"):
+        self._header_prefix = re.compile(header_prefix)
+        self.level = level
+
+    def extract(self, uri):
         with open(uri) as fp:
             bs = BeautifulSoup(fp, features="html.parser")
-            return self._extract_from_soup(os.path.dirname(os.path.realpath(uri)), bs, level)
+            return self._extract_from_soup(os.path.dirname(os.path.realpath(uri)), bs)
 
-    def _extract_from_soup(self, directory, bs: BeautifulSoup, level):
-        top_level = bs.find_all("h{}".format(level))
+    def _extract_from_soup(self, directory, bs: BeautifulSoup):
+        top_level = bs.find_all("h{}".format(self.level))
         cards = []
         for header in top_level:
             title = self._clean_header(header.text)
-            sort_tag = reduce(lambda acc, x: acc + x + '/', self._find_ancestors(header, level), '') + title
-            images, content = self._extract_content(header, level)
+            sort_tag = reduce(lambda acc, x: acc + x + '/', self._find_ancestors(header, self.level), '') + title
+            images, content = self._extract_content(header)
             cards.append(FlashCard(title, content, map(lambda url: directory + '/' + url, images), sort_tag))
         return cards
-
-    def supports(self, uri: str):
-        return uri.endswith(".html")
 
     def _clean_header(self, text: str) -> str:
         matches = self._header_prefix.search(text)
@@ -50,9 +52,8 @@ class HTMLExtractor(extractor.Extractor):
         ancestors.reverse()
         return ancestors
 
-    @staticmethod
-    def _extract_content(element, level):
-        end = element.find_next(name=re.compile("h[1-{}]".format(level)));
+    def _extract_content(self, element):
+        end = element.find_next(name=re.compile("h[1-{}]".format(self.level)));
         content = []
         image_files = []
         while element.next_sibling is not None and element.next_sibling != end:
