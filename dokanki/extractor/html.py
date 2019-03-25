@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 
 from dokanki.extractor import extractor
 from dokanki.flashcard import FlashCard
+from dokanki.logger import logger
 
 
 class HTMLExtractor(extractor.Extractor):
@@ -17,6 +18,7 @@ class HTMLExtractor(extractor.Extractor):
     def __init__(self, level=2, header_prefix="^(?:\\s*\\d+\\.)+\\s*(\[[^]]+])?\\s*"):
         self._header_prefix = re.compile(header_prefix)
         self.level = level
+        self.logger = logger(__name__)
 
     def extract(self, uri):
         with open(uri) as fp:

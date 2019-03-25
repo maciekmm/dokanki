@@ -2,23 +2,12 @@ import json
 import os
 import zipfile
 from functools import reduce
-import logging
 
 import genanki as genanki
 
 from dokanki.converter.gdocs import GDocsConverter
 from dokanki.extractor.html import HTMLExtractor
-
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-
-formatter = logging.Formatter('%(levelname)s:%(name)s:%(message)s')
-
-file_handler = logging.FileHandler('log data.log')
-file_handler.setFormatter(formatter)
-
-logger.addHandler(file_handler)
+from dokanki.logger import logger
 
 
 class UnsupportedFormatError(object):
@@ -54,12 +43,15 @@ class Dokanki(object):
                     'afmt': '{{FrontSide}}<hr><p>{{Hierarchy}}</p><hr id="answer">{{Answer}}',
                 },
             ])
+        self.logger = logger(__name__)
 
     def add_source(self, url, level):
+        self.logger.info("adding sources: {}, {}".format(url, level))
         self.sources.append((url, level))
 
     def extract(self):
         for source in self.sources:
+            self.logger.info("extracting from {}".format(source))
             for card in self._extract(source):
                 self.cards.append(card)
 

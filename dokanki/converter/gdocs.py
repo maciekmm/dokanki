@@ -7,7 +7,7 @@ import zipfile
 import requests
 
 from dokanki.converter import converter
-import dokanki
+from dokanki.logger import logger
 
 
 class GDocsConverter(converter.Converter):
@@ -17,12 +17,16 @@ class GDocsConverter(converter.Converter):
     _drive_url_pattern = re.compile("(?:http[s]?://)?(?:www\\.)?docs\\.google\\.com/document/d/([^/]+)/.*")
     _download_url = "https://docs.google.com/document/d/{}/export?format=zip"
 
+    def __init__(self):
+        self.logger = logger(__name__)
+
     @staticmethod
-    def _unzip_entry(zip_file, target):
+    def _unzip_entry(self, zip_file, target):
         zip_ref = zipfile.ZipFile(zip_file, 'r')
         zip_ref.extractall(target)
         zip_ref.close()
-        dokanki.logger.info("Unzipping {} to {}".format(zip_file, target))
+
+        self.logger.info("Unzipping {} to {}".format(zip_file, target))
 
         for file in os.listdir(target):
             if file.endswith("html"):
@@ -48,7 +52,7 @@ class GDocsConverter(converter.Converter):
         with open(target, 'wb') as out_file:
             shutil.copyfileobj(response.raw, out_file)
         del response
-        dokanki.logger.info("Downloading file from {}".format(url))
+        self.logger.info("Downloading file from {}".format(url))
         return target
 
     def convert(self, url):
