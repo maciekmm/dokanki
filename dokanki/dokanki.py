@@ -54,7 +54,6 @@ class Dokanki(object):
             self.logger.info("extracting from {}".format(source))
             for card in self._extract(source):
                 self.cards.append(card)
-
         return self
 
     def _extract(self, source):
@@ -65,7 +64,7 @@ class Dokanki(object):
 
         for converter in self.converters:
             if converter.supports(uri):
-                return self._extract(converter.convert(uri))
+                return self._extract((converter.convert(uri), level))
 
         raise UnsupportedFormatError()
 

@@ -49,6 +49,8 @@ class HTMLExtractor(extractor.Extractor):
         while level > 1 and element is not None:
             level -= 1
             element = element.find_previous("h{}".format(level))
+            if element is None:
+                break
             ancestors.append(self._clean_header(element.text))
 
         ancestors.reverse()

@@ -20,7 +20,6 @@ class GDocsConverter(converter.Converter):
     def __init__(self):
         self.logger = logger(__name__)
 
-    @staticmethod
     def _unzip_entry(self, zip_file, target):
         zip_ref = zipfile.ZipFile(zip_file, 'r')
         zip_ref.extractall(target)
