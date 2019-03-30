@@ -9,7 +9,7 @@ import genanki as genanki
 
 from dokanki.converter.gdocs import GDocsConverter
 from dokanki.converter.pandoc import Pandoc
-from dokanki.extractor.html import HTMLExtractor
+from dokanki.extractor.html.html import HTMLExtractor
 from dokanki.logger import logger as log
 
 
@@ -85,7 +85,7 @@ class Dokanki(object):
             if card.media is not None:
                 [images.append(img) for img in card.media]
 
-            sort_tag = reduce(lambda acc, x: acc + x + '/', card.hierarchy, '') + card.title
+            sort_tag = reduce(lambda acc, x: acc + x + '/', card.hierarchy, '')
             deck.add_note(
                 genanki.Note(guid=genanki.guid_for(card.title), model=self._note_model,
                              fields=[card.title, card.content, sort_tag]))
