@@ -1,7 +1,6 @@
 import os
 import re
 import shutil
-import tempfile
 import zipfile
 
 import requests
@@ -53,9 +52,7 @@ class GDocsConverter(converter.Converter):
         del response
         return target
 
-    def convert(self, url):
-        temp_dir = tempfile.mkdtemp(prefix="dokanki")
-
+    def convert(self, temp_dir, url):
         zip_file = self.download(url, "{}/docs.zip".format(temp_dir))
         self.logger.info("Converting...".format(temp_dir))
         index_file = self._unzip_entry(zip_file, temp_dir)

@@ -1,5 +1,7 @@
 import json
 import os
+import shutil
+import tempfile
 import zipfile
 from functools import reduce
 
@@ -25,6 +27,7 @@ class Dokanki(object):
     ]
     sources = []
     cards = []
+    temp_dirs = []
 
     def __init__(self, name, id, steps=[10, 20, 30], logger=log(__name__)):
         self.name = name
@@ -68,7 +71,9 @@ class Dokanki(object):
             if converter.supports(uri):
                 self.logger.info(
                     "Using {} converter.".format(converter.__class__.__name__))
-                return self._extract((converter.convert(uri), level))
+                temp_dir = tempfile.mkdtemp(prefix="dokanki")
+                self.temp_dirs.append(temp_dir)
+                return self._extract((converter.convert(temp_dir, uri), level))
 
         raise UnsupportedFormatError()
 
@@ -107,4 +112,7 @@ class Dokanki(object):
         zout.writestr('media', json.dumps(media_json))
         zout.close()
         zin.close()
+        self.logger.info("Cleaning up temporary files.")
         os.remove(temporary_file)
+        for temp_dir in self.temp_dirs:
+            shutil.rmtree(temp_dir)
