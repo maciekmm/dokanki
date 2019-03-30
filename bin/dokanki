@@ -3,6 +3,9 @@
 import argparse
 import random
 
+import logging
+import sys
+
 from dokanki.dokanki import Dokanki
 
 parser = argparse.ArgumentParser(description="Anki flashcard extractor from any document")
@@ -23,6 +26,7 @@ if args.id is None:
 
 if args.out is None:
     args.out = "./{}.apkg".format(args.name)
+
 
 dokgen = Dokanki(args.name, args.id, args.steps)
 dokgen.add_source(args.url, args.level)

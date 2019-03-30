@@ -6,8 +6,9 @@ from functools import reduce
 import genanki as genanki
 
 from dokanki.converter.gdocs import GDocsConverter
+from dokanki.converter.pandoc import Pandoc
 from dokanki.extractor.html import HTMLExtractor
-from dokanki.logger import logger
+from dokanki.logger import logger as log
 
 
 class UnsupportedFormatError(object):
@@ -19,12 +20,13 @@ class Dokanki(object):
         HTMLExtractor
     ]
     converters = [
-        GDocsConverter()
+        GDocsConverter(),
+        Pandoc()
     ]
     sources = []
     cards = []
 
-    def __init__(self, name, id, steps=[10, 20, 30]):
+    def __init__(self, name, id, steps=[10, 20, 30], logger=log(__name__)):
         self.name = name
         self.id = id if id is not None else genanki.guid_for(id)
         self.steps = steps
@@ -43,15 +45,13 @@ class Dokanki(object):
                     'afmt': '{{FrontSide}}<hr><p>{{Hierarchy}}</p><hr id="answer">{{Answer}}',
                 },
             ])
-        self.logger = logger(__name__)
+        self.logger = logger
 
     def add_source(self, url, level):
-        self.logger.info("adding sources: {}, {}".format(url, level))
         self.sources.append((url, level))
 
     def extract(self):
         for source in self.sources:
-            self.logger.info("extracting from {}".format(source))
             for card in self._extract(source):
                 self.cards.append(card)
         return self
@@ -60,10 +60,14 @@ class Dokanki(object):
         uri, level = source
         for extractor in self.extractors:
             if extractor.supports(uri):
-                return extractor(level).extract(uri)
+                extracted = extractor(level).extract(uri)
+                self.logger.info("Extracting {} cards using {}...".format(len(extracted), extractor.__name__))
+                return extracted
 
         for converter in self.converters:
             if converter.supports(uri):
+                self.logger.info(
+                    "Using {} converter.".format(converter.__class__.__name__))
                 return self._extract((converter.convert(uri), level))
 
         raise UnsupportedFormatError()
@@ -74,8 +78,7 @@ class Dokanki(object):
 
         for card in self.cards:
             if card.media is not None:
-                for img in card.media:
-                    images.append(img)
+                [images.append(img) for img in card.media]
 
             sort_tag = reduce(lambda acc, x: acc + x + '/', card.hierarchy, '') + card.title
             deck.add_note(
@@ -85,10 +88,10 @@ class Dokanki(object):
         package = genanki.Package(deck)
         package.media_files = images
         temporary_file = file_name + '.dokanki.temp'
+        self.logger.info("Assembling Anki database file {}.".format(file_name))
         package.write_to_file(temporary_file)
 
         # Workaround for genanki bug
-
         # Anki wants every image to be in root directory, this fixes paths
         for i in range(len(package.media_files)):
             package.media_files[i] = package.media_files[i].split('/')[-1]

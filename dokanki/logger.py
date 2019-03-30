@@ -1,15 +1,20 @@
 import logging
+import sys
 
 
 def logger(loggername):
     logger = logging.getLogger(loggername)
     logger.setLevel(logging.INFO)
 
-    formatter = logging.Formatter('%(levelname)s:%(name)s:%(message)s')
+    formatter = logging.Formatter('[%(levelname)s] %(message)s')
 
-    file_handler = logging.FileHandler('log-data.log')
-    file_handler.setFormatter(formatter)
+    lout = logging.StreamHandler(sys.stdout)
+    lout.setLevel(~logging.ERROR)
+    lout.setFormatter(formatter)
+    logger.addHandler(lout)
 
-    logger.addHandler(file_handler)
-
+    lerr = logging.StreamHandler(sys.stderr)
+    lerr.setLevel(logging.ERROR)
+    lerr.setFormatter(formatter)
+    logger.addHandler(lerr)
     return logger

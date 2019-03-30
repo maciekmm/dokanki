@@ -15,7 +15,7 @@ class HTMLExtractor(extractor.Extractor):
     def supports(uri: str):
         return uri.endswith(".html")
 
-    def __init__(self, level=2, header_prefix="^(?:\\s*\\d+\\.)+\\s*(\[[^]]+])?\\s*"):
+    def __init__(self, level=2, header_prefix="^(?:\\s*\\d+\\.\\s*)+(\[[^]]+])?\\s*"):
         self._header_prefix = re.compile(header_prefix)
         self.level = level
         self.logger = logger(__name__)
@@ -30,7 +30,10 @@ class HTMLExtractor(extractor.Extractor):
         cards = []
         for header in top_level:
             title = self._clean_header(header.text)
-            sort_tag = reduce(lambda acc, x: acc + x + '/', self._find_ancestors(header, self.level), '') + title
+            if len(title) == 0:
+                continue
+            sort_tag = self._find_ancestors(header, self.level)
+            sort_tag.append(title)
             images, content = self._extract_content(header)
             cards.append(FlashCard(title, content, map(lambda url: directory + '/' + url, images), sort_tag))
         return cards
@@ -38,8 +41,8 @@ class HTMLExtractor(extractor.Extractor):
     def _clean_header(self, text: str) -> str:
         matches = self._header_prefix.search(text)
         if matches is None:
-            return text
-        return text.replace(matches.group(0), "")
+            return text.strip(' ')
+        return text.replace(matches.group(0), "").strip(' ')
 
     def _find_ancestors(self, element, level):
         if level == 1 or element is None:
@@ -50,7 +53,7 @@ class HTMLExtractor(extractor.Extractor):
             level -= 1
             element = element.find_previous("h{}".format(level))
             if element is None:
-                break
+                continue
             ancestors.append(self._clean_header(element.text))
 
         ancestors.reverse()

@@ -25,7 +25,6 @@ class GDocsConverter(converter.Converter):
         zip_ref.extractall(target)
         zip_ref.close()
 
-        self.logger.info("Unzipping {} to {}".format(zip_file, target))
 
         for file in os.listdir(target):
             if file.endswith("html"):
@@ -42,6 +41,7 @@ class GDocsConverter(converter.Converter):
     def download(self, url, target):
         assert self.supports(url)
 
+        self.logger.info("Downloading file from {}...".format(url))
         response = requests.get(self.create_download_url(url), stream=True)
 
         if response.status_code != 200:
@@ -51,13 +51,13 @@ class GDocsConverter(converter.Converter):
         with open(target, 'wb') as out_file:
             shutil.copyfileobj(response.raw, out_file)
         del response
-        self.logger.info("Downloading file from {}".format(url))
         return target
 
     def convert(self, url):
         temp_dir = tempfile.mkdtemp(prefix="dokanki")
 
         zip_file = self.download(url, "{}/docs.zip".format(temp_dir))
+        self.logger.info("Converting...".format(temp_dir))
         index_file = self._unzip_entry(zip_file, temp_dir)
         os.remove(zip_file)
 
