@@ -13,7 +13,7 @@ from dokanki.extractor.html import HTMLExtractor
 from dokanki.logger import logger as log
 
 
-class UnsupportedFormatError(object):
+class UnsupportedFormatError(Exception):
     pass
 
 
