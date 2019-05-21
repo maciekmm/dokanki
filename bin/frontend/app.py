@@ -14,21 +14,21 @@ def index():
     if form.validate_on_submit():
         name = form.name.data
         url = form.url.data
-        id = random.randrange(100000000)
-        out = "./{}.apkg".format(name)
-        steps = [10, 30]
-        level = 2
+        id = random.randrange(100000000) if form.id.data is None else form.id.data
+        out = "./{}.apkg".format(name) if form.out.data is None else "./{}.apkg".format(form.out.data)
+        steps = [10, 30] if form.steps.data is None else form.steps.data
+        level = 2 if form.level.data is None else form.level.data
 
         dokgen = Dokanki(name, id, steps)
         try:
             dokgen.add_source(url, level)
             dokgen.extract().write(out)
+            response = make_response(send_file('{}.apkg'.format(name)))
+            response.headers['Content-Disposition'] = "attachment; filename={}.apkg".format(name)
+            return response
         except (ConnectionError, FileNotFoundError, UnsupportedFormatError, RuntimeError) as err:
             print(err)
-
-        response = make_response(send_file('{}.apkg'.format(name)))
-        response.headers['Content-Disposition'] = "attachment; filename={}.apkg".format(name)
-        return response
+            return '<h1>Exception:\n'+str(err)+'</h1>'
     return render_template('simple_gdocs_case.html', form=form)
 
 
