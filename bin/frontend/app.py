@@ -1,7 +1,6 @@
 from flask import Flask, render_template, make_response, send_file
 from bin.frontend.forms import InsertForm, FileForm
 import random
-from zipfile import ZipFile
 from dokanki.dokanki import Dokanki, UnsupportedFormatError
 
 
