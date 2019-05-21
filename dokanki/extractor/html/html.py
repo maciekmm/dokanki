@@ -60,6 +60,8 @@ class HTMLExtractor(extractor.Extractor):
             element = element.next_sibling
             images = element.find_all(name="img")
             for image in images:
+                if not image.has_attr('src'):
+                    continue
                 # Return the complete image path for genanki to correctly include them in deck zip
                 image_files.append(image['original_src'] if image.has_attr('original_src') else image['src'])
                 # After inclusion the files end up in root directory and media file mapping does not seem to work
