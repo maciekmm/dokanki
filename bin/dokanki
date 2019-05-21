@@ -3,10 +3,8 @@
 import argparse
 import random
 
-import logging
-import sys
 
-from dokanki.dokanki import Dokanki
+from dokanki.dokanki import Dokanki, UnsupportedFormatError
 
 parser = argparse.ArgumentParser(description="Anki flashcard extractor from any document")
 parser.add_argument('--name', type=str, required=True, help='deck name')
@@ -29,5 +27,8 @@ if args.out is None:
 
 
 dokgen = Dokanki(args.name, args.id, args.steps)
-dokgen.add_source(args.url, args.level)
-dokgen.extract().write(args.out)
+try:
+    dokgen.add_source(args.url, args.level)
+    dokgen.extract().write(args.out)
+except (ConnectionError, FileNotFoundError, UnsupportedFormatError, RuntimeError) as err:
+    print(err)

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dokanki</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            background: #fbfbfb;
+            height: 100%;
+        }
+
+        body {
+            width: 50%;
+            height: 100%;
+            margin: 0 auto;
+            padding: 5em;
+        }
+
+        img {
+            width: 100%;
+        }
+
+        input {
+            border-radius: 15px;
+            border: 0;
+            color: #000;
+            height: 4em;
+            background: #fff;
+            padding: 1em;
+            margin: 1em;
+            width: 100%;
+            background: #fff;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            width: 80%;
+            margin: 0 auto;
+        }
+
+        label {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1><a href="/"><img src="../static/logo.png"></a></h1>
+</header>
+<main>
+    <form method="post">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+        {{ form.name.label(class="form-control-label") }}
+        {{ form.name(class="form-control form-control-lg", placeholder="Name", required="true") }}
+        </div>
+
+        <div class="form-group">
+            {{ form.url.label(class="form-control-label") }}
+            {{ form.url(class="form-control form-control-lg", placeholder="https://docs...", required="true") }}
+        </div>
+        <div class="form-group">
+            {{ form.level.label(class="form-control-label") }}
+            {{ form.level(type="number", placeholder="level", value="2", required="true") }}
+        </div>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-outline-info", value="Konwertuj") }}
+        </div>
+    </form>
+</main>
+</body>
+</html>

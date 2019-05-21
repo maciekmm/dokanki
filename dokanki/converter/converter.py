@@ -1,6 +1,6 @@
 class Converter:
     """"""
-    def convert(self, url):
+    def convert(self, temp_dir,  url):
         pass
 
     def supports(self, url):

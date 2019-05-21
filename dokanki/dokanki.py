@@ -8,12 +8,13 @@ from functools import reduce
 import genanki as genanki
 
 from dokanki.converter.gdocs import GDocsConverter
+from dokanki.converter.pds import PDSConverter
 from dokanki.converter.pandoc import Pandoc
 from dokanki.extractor.html.html import HTMLExtractor
 from dokanki.logger import logger as log
 
 
-class UnsupportedFormatError(object):
+class UnsupportedFormatError(Exception):
     pass
 
 
@@ -23,6 +24,7 @@ class Dokanki(object):
     ]
     converters = [
         GDocsConverter(),
+        PDSConverter(),
         Pandoc()
     ]
     sources = []

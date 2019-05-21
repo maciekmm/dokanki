@@ -24,7 +24,6 @@ class GDocsConverter(converter.Converter):
         zip_ref.extractall(target)
         zip_ref.close()
 
-
         for file in os.listdir(target):
             if file.endswith("html"):
                 return "{}/{}".format(target, file)
@@ -41,16 +40,17 @@ class GDocsConverter(converter.Converter):
         assert self.supports(url)
 
         self.logger.info("Downloading file from {}...".format(url))
-        response = requests.get(self.create_download_url(url), stream=True)
+        try:
+            response = requests.get(self.create_download_url(url), stream=True)
+            if response.status_code != 200:
+                raise ConnectionError("invalid status code {}".format(response.status_code))
 
-        if response.status_code != 200:
+            with open(target, 'wb') as out_file:
+                shutil.copyfileobj(response.raw, out_file)
             del response
-            raise ConnectionError("invalid status code {}".format(response.status_code))
-
-        with open(target, 'wb') as out_file:
-            shutil.copyfileobj(response.raw, out_file)
-        del response
-        return target
+            return target
+        except requests.exceptions.ConnectionError:
+            raise ConnectionError("Unable to connect. Check your network connection.")
 
     def convert(self, temp_dir, url):
         zip_file = self.download(url, "{}/docs.zip".format(temp_dir))
