@@ -3,8 +3,6 @@
 import argparse
 import random
 
-import logging
-import sys
 
 from dokanki.dokanki import Dokanki, UnsupportedFormatError
 

@@ -49,5 +49,6 @@ setup(
     description='Convert properly structured documents to anki flashcards', install_requires=['requests',
                                                                                               'beautifulsoup4',
                                                                                               'genanki', 'pypandoc',
-                                                                                              'utils']
+                                                                                              'utils', 'flask',
+                                                                                              'wtforms']
 )

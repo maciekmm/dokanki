@@ -60,7 +60,7 @@ class HTMLExtractor(extractor.Extractor):
         return ancestors
 
     def _extract_content(self, element):
-        end = element.find_next(name=re.compile("h[1-{}]".format(self.level)));
+        end = element.find_next(name=re.compile("h[1-{}]".format(self.level)))
         content = []
         image_files = []
         while element.next_sibling is not None and element.next_sibling != end:

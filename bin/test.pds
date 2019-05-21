@@ -1,0 +1,32 @@
+**1** correct answers below:
+A) A
+>>>B) B
+>>>C) Correct
+
+[#1] **2** correct answers below:
+A) A multiline
+   answer!
+>>>B) Borrect
+>>>C) Correct
+
+**3** correct answers below:
+>>>A) Aorrect
+>>>B) Borrect
+>>>C) Correct
+
+MathJax test. ^^\Delta =^^:
+>>>A) ^^b^2-4ac^^
+B) ^^\sqrt{b^2-4ac}^^
+
+<options> {
+    "format": "2.1",
+    "markdown": true,
+    "mathjax": true,
+    "grading": "custom: incorrect ? 0 : (missed == 0) ? 3 : (missed == 1 && correct) ? 1 : 0",
+    "timeLimit": 90,
+    "repeatIncorrect": true,
+    "explain": "always",
+    "explanations": {
+        "1": "This question's purpose is testing if *explanations* work."
+    }
+}
