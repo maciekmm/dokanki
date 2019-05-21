@@ -44,7 +44,6 @@ class PDSConverter(converter.Converter):
         return result
 
     def _write_to_file(self, file_path, converted_questions):
-        # with open(file_path, 'w') as f:
         f = open(file_path, 'w')
         for question in converted_questions:
             f.write(question[0])
