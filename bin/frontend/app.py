@@ -28,7 +28,7 @@ def index():
             return response
         except (ConnectionError, FileNotFoundError, UnsupportedFormatError, RuntimeError) as err:
             print(err)
-            return '<h1>Exception:\n'+str(err)+'</h1>'
+            return render_template('exception_handling.html', form=form, err = str(err))
     return render_template('simple_gdocs_case.html', form=form)
 
 
