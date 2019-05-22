@@ -116,5 +116,5 @@ class Dokanki(object):
         zin.close()
         self.logger.info("Cleaning up temporary files.")
         os.remove(temporary_file)
-        for temp_dir in self.temp_dirs:
-            shutil.rmtree(temp_dir)
+        # for temp_dir in self.temp_dirs:
+        #     shutil.rmtree(temp_dir)

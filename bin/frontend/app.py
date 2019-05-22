@@ -25,8 +25,8 @@ def index():
         url = form.url.data
         id = hash(url)
         out = "{}/{}-{}.apkg".format(basedir, name, id)
-        steps = [10, 30]
-        level = 2
+        steps = [10, 30] if form.steps.data is None else form.steps.data
+        level = 2 if form.level.data is None else form.level.data
 
         dokgen = Dokanki(name, id, steps)
         try:
